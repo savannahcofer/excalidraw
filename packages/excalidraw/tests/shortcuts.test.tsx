@@ -3,6 +3,7 @@ import { Excalidraw } from "../index";
 import { API } from "./helpers/api";
 import { Keyboard } from "./helpers/ui";
 import { fireEvent, render, waitFor } from "./test-utils";
+import React from 'react';
 
 describe("shortcuts", () => {
   it("Clear canvas shortcut should display confirm dialog", async () => {

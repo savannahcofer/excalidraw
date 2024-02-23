@@ -11,6 +11,7 @@ import {
 import { ExcalidrawLinearElement } from "../element/types";
 import { reseed } from "../random";
 import { vi } from "vitest";
+import React from 'react';
 
 // Unmount ReactDOM from root
 ReactDOM.unmountComponentAtNode(document.getElementById("root")!);

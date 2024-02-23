@@ -8,6 +8,7 @@ import { Excalidraw } from "../index";
 import { API } from "./helpers/api";
 import { Keyboard } from "./helpers/ui";
 import { KEYS } from "../keys";
+import React from 'react';
 
 const { h } = window;
 

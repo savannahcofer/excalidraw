@@ -3,6 +3,7 @@
 // -----------------------------------------------------------------------------
 
 import { MIME_TYPES, SVG_NS } from "../constants";
+import { t } from "../i18n";
 import { AppClassProperties, DataURL, BinaryFiles } from "../types";
 import { isInitializedImageElement } from "./typeChecks";
 import {
@@ -99,7 +100,7 @@ export const normalizeSVG = async (SVGString: string) => {
   const svg = doc.querySelector("svg");
   const errorNode = doc.querySelector("parsererror");
   if (errorNode || !isHTMLSVGElement(svg)) {
-    throw new Error("Invalid SVG");
+    throw new Error(t("errors.invalidSVGString"));
   } else {
     if (!svg.hasAttribute("xmlns")) {
       svg.setAttribute("xmlns", SVG_NS);

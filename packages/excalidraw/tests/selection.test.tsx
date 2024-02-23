@@ -14,6 +14,7 @@ import { API } from "./helpers/api";
 import { Keyboard, Pointer, UI } from "./helpers/ui";
 import { SHAPES } from "../shapes";
 import { vi } from "vitest";
+import React from 'react';
 
 // Unmount ReactDOM from root
 ReactDOM.unmountComponentAtNode(document.getElementById("root")!);
@@ -483,8 +484,7 @@ describe("tool locking & selection", () => {
       if (value !== "image" && value !== "selection" && value !== "eraser") {
         const element = UI.createElement(value);
         expect(h.state.selectedElementIds[element.id]).not.toBe(true);
-      }
-    }
+      }}
   });
 });
 

@@ -1131,7 +1131,7 @@ class App extends React.Component<AppProps, AppState> {
                 display: isVisible ? "block" : "none",
                 opacity: getRenderOpacity(
                   el,
-                  getContainingFrame(el, this.scene.getNonDeletedElementsMap()),
+                  getContainingFrame(el),
                   this.elementsPendingErasure,
                 ),
                 ["--embeddable-radius" as string]: `${getCornerRadius(
@@ -3214,13 +3214,7 @@ class App extends React.Component<AppProps, AppState> {
           try {
             return { file: await ImageURLToFile(url) };
           } catch (error: any) {
-            let errorMessage = error.message;
-            if (error.cause === "FETCH_ERROR") {
-              errorMessage = t("errors.failedToFetchImage");
-            } else if (error.cause === "UNSUPPORTED") {
-              errorMessage = t("errors.unsupportedFileType");
-            }
-            return { errorMessage };
+            return { errorMessage: error.message as string };
           }
         }),
       );
@@ -4405,7 +4399,7 @@ class App extends React.Component<AppProps, AppState> {
       ),
     ).filter((element) => {
       // hitting a frame's element from outside the frame is not considered a hit
-      const containingFrame = getContainingFrame(element, elementsMap);
+      const containingFrame = getContainingFrame(element);
       return containingFrame &&
         this.state.frameRendering.enabled &&
         this.state.frameRendering.clip
@@ -7795,7 +7789,7 @@ class App extends React.Component<AppProps, AppState> {
             );
 
             if (linearElement?.frameId) {
-              const frame = getContainingFrame(linearElement, elementsMap);
+              const frame = getContainingFrame(linearElement);
 
               if (frame && linearElement) {
                 if (
@@ -8484,18 +8478,10 @@ class App extends React.Component<AppProps, AppState> {
     // mustn't be larger than 128 px
     // https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Basic_User_Interface/Using_URL_values_for_the_cursor_property
     const cursorImageSizePx = 96;
-    let imagePreview;
 
-    try {
-      imagePreview = await resizeImageFile(imageFile, {
-        maxWidthOrHeight: cursorImageSizePx,
-      });
-    } catch (e: any) {
-      if (e.cause === "UNSUPPORTED") {
-        throw new Error(t("errors.unsupportedFileType"));
-      }
-      throw e;
-    }
+    const imagePreview = await resizeImageFile(imageFile, {
+      maxWidthOrHeight: cursorImageSizePx,
+    });
 
     let previewDataURL = await getDataURL(imagePreview);
 
@@ -8884,9 +8870,8 @@ class App extends React.Component<AppProps, AppState> {
             });
             return;
           } catch (error: any) {
-            // Don't throw for image scene daa
             if (error.name !== "EncodingError") {
-              throw new Error(t("alerts.couldNotLoadInvalidFile"));
+              throw error;
             }
           }
         }
@@ -8960,39 +8945,12 @@ class App extends React.Component<AppProps, AppState> {
   ) => {
     file = await normalizeFile(file);
     try {
-      let ret;
-      try {
-        ret = await loadSceneOrLibraryFromBlob(
-          file,
-          this.state,
-          this.scene.getElementsIncludingDeleted(),
-          fileHandle,
-        );
-      } catch (error: any) {
-        const imageSceneDataError = error instanceof ImageSceneDataError;
-        if (
-          imageSceneDataError &&
-          error.code === "IMAGE_NOT_CONTAINS_SCENE_DATA" &&
-          !this.isToolSupported("image")
-        ) {
-          this.setState({
-            isLoading: false,
-            errorMessage: t("errors.imageToolNotSupported"),
-          });
-          return;
-        }
-        const errorMessage = imageSceneDataError
-          ? t("alerts.cannotRestoreFromImage")
-          : t("alerts.couldNotLoadInvalidFile");
-        this.setState({
-          isLoading: false,
-          errorMessage,
-        });
-      }
-      if (!ret) {
-        return;
-      }
-
+      const ret = await loadSceneOrLibraryFromBlob(
+        file,
+        this.state,
+        this.scene.getElementsIncludingDeleted(),
+        fileHandle,
+      );
       if (ret.type === MIME_TYPES.excalidraw) {
         this.setState({ isLoading: true });
         this.syncActionResult({
@@ -9017,6 +8975,17 @@ class App extends React.Component<AppProps, AppState> {
           });
       }
     } catch (error: any) {
+      if (
+        error instanceof ImageSceneDataError &&
+        error.code === "IMAGE_NOT_CONTAINS_SCENE_DATA" &&
+        !this.isToolSupported("image")
+      ) {
+        this.setState({
+          isLoading: false,
+          errorMessage: t("errors.imageToolNotSupported"),
+        });
+        return;
+      }
       this.setState({ isLoading: false, errorMessage: error.message });
     }
   };

@@ -3,6 +3,7 @@ import { ExcalidrawImperativeAPI } from "../types";
 import { resolvablePromise } from "../utils";
 import { render } from "./test-utils";
 import { Pointer } from "./helpers/ui";
+import React from 'react';
 
 describe("setActiveTool()", () => {
   const h = window.h;

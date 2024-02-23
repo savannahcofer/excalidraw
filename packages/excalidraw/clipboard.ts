@@ -16,7 +16,8 @@ import {
 import { deepCopyElement } from "./element/newElement";
 import { mutateElement } from "./element/mutateElement";
 import { getContainingFrame } from "./frame";
-import { arrayToMap, isMemberOf, isPromiseLike } from "./utils";
+import { isMemberOf, isPromiseLike } from "./utils";
+import { t } from "./i18n";
 
 type ElementsClipboard = {
   type: typeof EXPORT_DATA_TYPES.excalidrawClipboard;
@@ -125,7 +126,6 @@ export const serializeAsClipboardJSON = ({
   elements: readonly NonDeletedExcalidrawElement[];
   files: BinaryFiles | null;
 }) => {
-  const elementsMap = arrayToMap(elements);
   const framesToCopy = new Set(
     elements.filter((element) => isFrameLikeElement(element)),
   );
@@ -152,8 +152,8 @@ export const serializeAsClipboardJSON = ({
     type: EXPORT_DATA_TYPES.excalidrawClipboard,
     elements: elements.map((element) => {
       if (
-        getContainingFrame(element, elementsMap) &&
-        !framesToCopy.has(getContainingFrame(element, elementsMap)!)
+        getContainingFrame(element) &&
+        !framesToCopy.has(getContainingFrame(element)!)
       ) {
         const copiedElement = deepCopyElement(element);
         mutateElement(copiedElement, {
@@ -434,7 +434,7 @@ export const copyTextToSystemClipboard = async (
 
   // (3) if that fails, use document.execCommand
   if (!copyTextViaExecCommand(text)) {
-    throw new Error("Error copying to clipboard.");
+    throw new Error(t("errors.copyToSystemClipboardFailed"));
   }
 };
 

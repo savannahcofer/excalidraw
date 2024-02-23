@@ -21,7 +21,7 @@ import { mutateElement } from "./element/mutateElement";
 import { AppClassProperties, AppState, StaticCanvasAppState } from "./types";
 import { getElementsWithinSelection, getSelectedElements } from "./scene";
 import { getElementsInGroup, selectGroupsFromGivenElements } from "./groups";
-import type { ExcalidrawElementsIncludingDeleted } from "./scene/Scene";
+import Scene, { ExcalidrawElementsIncludingDeleted } from "./scene/Scene";
 import { getElementLineSegments } from "./element/bounds";
 import {
   doLineSegmentsIntersect,
@@ -377,13 +377,25 @@ export const getElementsInNewFrame = (
 
 export const getContainingFrame = (
   element: ExcalidrawElement,
-  elementsMap: ElementsMap,
+  /**
+   * Optionally an elements map, in case the elements aren't in the Scene yet.
+   * Takes precedence over Scene elements, even if the element exists
+   * in Scene elements and not the supplied elements map.
+   */
+  elementsMap?: Map<string, ExcalidrawElement>,
 ) => {
-  if (!element.frameId) {
-    return null;
+  if (element.frameId) {
+    if (elementsMap) {
+      return (elementsMap.get(element.frameId) ||
+        null) as null | ExcalidrawFrameLikeElement;
+    }
+    return (
+      (Scene.getScene(element)?.getElement(
+        element.frameId,
+      ) as ExcalidrawFrameLikeElement) || null
+    );
   }
-  return (elementsMap.get(element.frameId) ||
-    null) as null | ExcalidrawFrameLikeElement;
+  return null;
 };
 
 // --------------------------- Frame Operations -------------------------------
@@ -685,7 +697,7 @@ export const getTargetFrame = (
   return appState.selectedElementIds[_element.id] &&
     appState.selectedElementsAreBeingDragged
     ? appState.frameToHighlight
-    : getContainingFrame(_element, elementsMap);
+    : getContainingFrame(_element);
 };
 
 // TODO: this a huge bottleneck for large scenes, optimise

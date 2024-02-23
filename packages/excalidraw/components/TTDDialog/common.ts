@@ -10,7 +10,6 @@ import { NonDeletedExcalidrawElement } from "../../element/types";
 import { AppClassProperties, BinaryFiles } from "../../types";
 import { canvasToBlob } from "../../data/blob";
 import { EditorLocalStorage } from "../../data/EditorLocalStorage";
-import { t } from "../../i18n";
 
 const resetPreview = ({
   canvasRef,
@@ -109,14 +108,7 @@ export const convertMermaidToExcalidraw = async ({
     });
     // if converting to blob fails, there's some problem that will
     // likely prevent preview and export (e.g. canvas too big)
-    try {
-      await canvasToBlob(canvas);
-    } catch (e: any) {
-      if (e.name === "CANVAS_POSSIBLY_TOO_BIG") {
-        throw new Error(t("canvasError.canvasTooBig"));
-      }
-      throw e;
-    }
+    await canvasToBlob(canvas);
     parent.style.background = "var(--default-bg-color)";
     canvasNode.replaceChildren(canvas);
   } catch (err: any) {

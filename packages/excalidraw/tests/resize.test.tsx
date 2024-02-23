@@ -14,6 +14,7 @@ import { KEYS } from "../keys";
 import { isLinearElement } from "../element/typeChecks";
 import { LinearElementEditor } from "../element/linearElementEditor";
 import { arrayToMap } from "../utils";
+import React from 'react';
 
 ReactDOM.unmountComponentAtNode(document.getElementById("root")!);
 

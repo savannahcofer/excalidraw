@@ -120,13 +120,14 @@ export const SelectedShapeActions = ({
         targetElements.some((element) => hasStrokeStyle(element.type))) && (
         <>
           {renderAction("changeStrokeStyle")}
-          {renderAction("changeSloppiness")}
+          {/* {renderAction("changeSloppiness")} */}
         </>
       )}
 
       {(canChangeRoundness(appState.activeTool.type) ||
         targetElements.some((element) => canChangeRoundness(element.type))) && (
-        <>{renderAction("changeRoundness")}</>
+        <>{/* renderAction("changeRoundness") */ }
+        </>
       )}
 
       {(appState.activeTool.type === "text" ||
@@ -151,15 +152,15 @@ export const SelectedShapeActions = ({
 
       {renderAction("changeOpacity")}
 
-      <fieldset>
+      {/* <fieldset>
         <legend>{t("labels.layers")}</legend>
-        <div className="buttonList">
+        {<div className="buttonList">
           {renderAction("sendToBack")}
           {renderAction("sendBackward")}
           {renderAction("bringToFront")}
           {renderAction("bringForward")}
-        </div>
-      </fieldset>
+        </div>}
+      </fieldset> */}
 
       {targetElements.length > 1 && !isSingleElementBoundContainer && (
         <fieldset>

@@ -62,13 +62,13 @@ export const SHAPES = [
     numericKey: KEYS["7"],
     fillable: false,
   },
-  {
+/*   {
     icon: TextIcon,
     value: "text",
     key: KEYS.T,
     numericKey: KEYS["8"],
     fillable: false,
-  },
+  }, */
   {
     icon: ImageIcon,
     value: "image",

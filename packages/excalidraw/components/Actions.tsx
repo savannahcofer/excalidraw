@@ -150,7 +150,7 @@ export const SelectedShapeActions = ({
         <>{renderAction("changeArrowhead")}</>
       )}
 
-      {renderAction("changeOpacity")}
+      {/*renderAction("changeOpacity")*/}
 
       {/* <fieldset>
         <legend>{t("labels.layers")}</legend>

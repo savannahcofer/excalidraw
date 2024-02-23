@@ -271,8 +271,12 @@
   }
 
   .App-toolbar {
+    position: relative;
     width: 100%;
-
+    height: 4rem; /* Adjusted height */
+    margin: 0 auto;
+    top: 0;
+    
     .eraser {
       &.ToolIcon:hover {
         --icon-fill-color: #fff;

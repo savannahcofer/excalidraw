@@ -8,6 +8,8 @@ RUN yarn --ignore-optional --network-timeout 600000
 ARG NODE_ENV=production
 
 COPY . .
+
+# RUN yarn build
 RUN yarn build:app:docker
 
 FROM nginx:1.21-alpine

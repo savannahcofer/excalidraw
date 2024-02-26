@@ -1,6 +1,6 @@
 {
   "private": true,
-  "name": "excalidraw-monorepo",
+  "name": "excalidraw-skywalk",
   "workspaces": [
     "excalidraw-app",
     "packages/excalidraw",

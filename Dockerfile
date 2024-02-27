@@ -9,11 +9,11 @@ ARG NODE_ENV=production
 
 COPY . .
 
-# RUN yarn build
-RUN yarn build:app:docker
+WORKDIR /opt/node_app/excalidraw-app/
+RUN yarn build
 
 FROM nginx:1.21-alpine
 
-COPY --from=build /opt/node_app/build /usr/share/nginx/html
+COPY --from=build /opt/node_app/excalidraw-app/build /usr/share/nginx/html
 
 HEALTHCHECK CMD wget -q -O /dev/null http://localhost || exit 1
